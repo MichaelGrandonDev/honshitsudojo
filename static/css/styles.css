@@ -665,6 +665,23 @@ a:hover {
   text-wrap: pretty;
 }
 
+.lead.italic,
+.body-copy,
+#nombre > .section-inner > .lead,
+.blog-card p {
+  font-size: 0.98rem;
+  letter-spacing: 0.005em;
+  text-align: justify;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+#nombre > .section-inner > .lead {
+  text-align-last: center;
+}
+
 .lead.italic {
   font-style: italic;
   font-weight: 400;
@@ -1971,10 +1988,11 @@ a:hover {
   }
 
   .lead.italic,
-  .section-inner.centered .body-copy,
-  .split-copy.centered .body-copy,
-  #nombre > .section-inner > .lead {
-    text-align: left;
+  .body-copy,
+  #nombre > .section-inner > .lead,
+  .blog-card p {
+    font-size: 0.93rem;
+    line-height: 1.8;
   }
 
   .panel {
