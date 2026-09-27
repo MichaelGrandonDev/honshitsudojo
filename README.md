@@ -17,18 +17,49 @@ Sitio web oficial de **Honshitsu Dojo** — Karate Do Shorin Ryu, Escuela Miyaza
 
 ---
 
+## ⭐ Destacados
+
+- **Autonomía total del cliente.** El dojo administra su contenido desde un **panel propio**, sin depender de un desarrollador:
+  - **Fotos y videos:** subir, reemplazar, ordenar, destacar y eliminar; también agregar **videos de YouTube pegando el enlace**.
+  - **Noticias y documentos:** publicar, editar y eliminar notas con **PDF adjunto**.
+  - **Secciones del sitio:** fotos del collage y datos de ubicación con mapa.
+- **Login seguro:** sesiones con cookies `HttpOnly`/`SameSite`, regeneración de sesión al ingresar, **token CSRF en cada acción** y credenciales fuera del código.
+- **Aprobado por QA testing manual:** pruebas funcionales de punta a punta, vista de celular, panel de administración y seguridad, con los fallos encontrados **corregidos y verificados de nuevo**.
+- **QA automatizado incluido:** scripts en [`qa/`](qa/) para revisar enlaces, recursos, datos, accesibilidad y seguridad básica.
+- **Hecho a mano, sin CMS ni frameworks de frontend:** Python + Jinja2 para generar el sitio, PHP para el panel, JavaScript y CSS propios.
+
+---
+
 ## Índice
 
-1. [Sobre el proyecto](#sobre-el-proyecto)
-2. [Lenguajes utilizados](#lenguajes-utilizados)
-3. [Arquitectura](#arquitectura)
-4. [Panel de administración: login y usuarios](#panel-de-administración-login-y-usuarios)
-5. [Gestión interna de datos](#gestión-interna-de-datos)
-6. [Seguridad aplicada](#seguridad-aplicada)
-7. [QA testing](#qa-testing)
-8. [Cómo correrlo localmente](#cómo-correrlo-localmente)
-9. [Estructura del proyecto](#estructura-del-proyecto)
-10. [Qué no incluye este repositorio](#qué-no-incluye-este-repositorio)
+1. [Destacados](#-destacados)
+2. [Habilidades y técnicas demostradas](#habilidades-y-técnicas-demostradas)
+3. [Sobre el proyecto](#sobre-el-proyecto)
+4. [Lenguajes utilizados](#lenguajes-utilizados)
+5. [Arquitectura](#arquitectura)
+6. [Panel de administración: login y usuarios](#panel-de-administración-login-y-usuarios)
+7. [Gestión interna de datos](#gestión-interna-de-datos)
+8. [Seguridad aplicada](#seguridad-aplicada)
+9. [QA testing](#qa-testing)
+10. [Cómo correrlo localmente](#cómo-correrlo-localmente)
+11. [Estructura del proyecto](#estructura-del-proyecto)
+12. [Qué no incluye este repositorio](#qué-no-incluye-este-repositorio)
+
+---
+
+## Habilidades y técnicas demostradas
+
+| Área | Habilidades y técnicas |
+|---|---|
+| **Frontend** | HTML5 semántico, CSS3 propio (variables, Grid, Flexbox, animaciones), JavaScript vanilla ES6+: lightbox con teclado, carga de datos con `fetch`, animaciones al hacer scroll, collage y menú móvil. Sin frameworks. |
+| **Backend / PHP** | Panel de administración completo en PHP: rutas por acción, subida y reemplazo de archivos, CRUD sobre JSON, validación de entradas, compatible con PHP 5 y versiones actuales. |
+| **Python / build** | Flask para desarrollo local, plantillas Jinja2 con macros, generación estática (SSG), build que descarga los datos en vivo, cache busting por hash y deploy por FTP con `ftplib`. |
+| **Gestión de datos** | Modelo de datos en JSON por sección, escritura con bloqueo, nombres de archivo generados por el servidor, borrado seguro de archivos y una sola fuente de datos para panel, build y sitio. |
+| **Seguridad** | Autenticación con sesiones, `session_regenerate_id`, cookies `HttpOnly`/`SameSite`/`Secure`, CSRF con `random_bytes` + `hash_equals`, escapado contra XSS, validación de MIME y extensión, protección contra path traversal, reglas `.htaccess`, HTTPS forzado y login que falla cerrado. |
+| **QA testing** | QA manual (funcional E2E, responsive, panel, seguridad, validación de entradas, accesibilidad), regresión de deploy por hash, cuidado de los datos reales (copia y restauración) y scripts automatizados en Python y Bash. |
+| **DevOps / deploy** | Hosting Apache compartido, `.htaccess`, deploy que no pisa el contenido del cliente, variables de entorno en `.env` y Git/GitHub sin secretos en el historial. |
+| **UX / diseño responsive** | Identidad visual minimalista japonesa, diseño mobile-first probado en celular y un panel pensado para usuarios no técnicos: visor, confirmaciones antes de borrar y avisos de fotos de baja calidad. |
+| **Accesibilidad** | `lang="es"`, jerarquía de títulos, textos `alt`, `aria-label` en botones de ícono y navegación por teclado en el visor. |
 
 ---
 
@@ -158,7 +189,19 @@ No hay base de datos: cada sección tiene su propio `data.json`, que solo el pan
 
 ## QA testing
 
-El sitio y el panel pasaron por una ronda de QA manual y automatizada, en producción y en el entorno local. Los fallos encontrados se corrigieron y se volvieron a verificar.
+> ✅ **La aplicación pasó por los filtros de QA testing manual** sobre el sitio en producción: sitio público, vista de celular, panel de administración y seguridad. Cada fallo encontrado se corrigió y se volvió a probar antes de darlo por cerrado.
+
+### QA manual: casos probados
+
+| Área | Casos | Resultado |
+|---|---|---|
+| **Sitio público** | Navegación y anclas del menú; galería: abrir, pasar y cerrar el visor con mouse y teclado; videos propios y de YouTube; collage; mapa y «Cómo llegar»; botón de WhatsApp; blog y PDF. | ✅ OK tras correcciones |
+| **Celular** (390×844) | Sin scroll horizontal, menú desplegable, botones táctiles, galería y visor. | ✅ OK |
+| **Panel de administración** | Login y logout; pestañas Resumen, Galería, Blog, Collage y Ubicación; visor de fotos y videos; validación de formularios; confirmación antes de eliminar; enlaces de YouTube válidos e inválidos. | ✅ OK tras correcciones |
+| **Seguridad** | Acciones sin sesión; credenciales incorrectas; POST sin token CSRF; acceso directo a archivos internos (`.env`, `.git`, configuración); listado de carpetas; redirección a HTTPS. | ✅ OK tras correcciones |
+| **Enlaces y recursos** | Todos los enlaces, imágenes, CSS, JS y JSON del sitio responden correctamente. | ✅ OK tras correcciones |
+
+Las pruebas que modificaban datos reales se hicieron copiando antes los JSON y restaurándolos al terminar, así el contenido del cliente no se tocó.
 
 ### Técnicas aplicadas
 
