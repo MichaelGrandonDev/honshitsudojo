@@ -1,0 +1,12 @@
+{
+  "karate": [
+    { "id": "seed-k1", "src": "static/img/hero-gi.jpg" },
+    { "id": "seed-k2", "src": "static/img/sensei-lg.jpeg" },
+    { "id": "seed-k3", "src": "static/img/valores.jpeg" }
+  ],
+  "historia": [
+    { "id": "seed-h1", "src": "static/img/valores.jpeg" },
+    { "id": "seed-h2", "src": "static/img/ubicacion-templo.jpg" },
+    { "id": "seed-h3", "src": "static/img/ubicacion.jpg" }
+  ]
+}

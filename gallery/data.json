@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "id": "seed-hero",
+      "type": "image",
+      "src": "static/img/hero-gi.jpg",
+      "caption": "El camino comienza con cada nudo del obi",
+      "created": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "seed-sensei",
+      "type": "image",
+      "src": "static/img/sensei-lg.jpeg",
+      "caption": "Nuestro Sensei",
+      "created": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "seed-valores",
+      "type": "image",
+      "src": "static/img/valores.jpeg",
+      "caption": "Práctica y bushidō",
+      "created": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "seed-ubicacion",
+      "type": "image",
+      "src": "static/img/ubicacion.jpg",
+      "caption": "Biblioteca Alberdi — Punta Alta",
+      "created": "2026-01-01T00:00:00+00:00"
+    }
+  ]
+}

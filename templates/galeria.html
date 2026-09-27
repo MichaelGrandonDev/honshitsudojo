@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ galeria.page_title }}</title>
+  <meta name="description" content="{{ galeria.lead }}" />
+  <meta property="og:title" content="{{ galeria.title }} · {{ site.name }}" />
+  <meta property="og:description" content="{{ galeria.lead }}" />
+  <meta property="og:image" content="{{ site.url }}static/img/logo.jpg" />
+  <meta property="og:url" content="{{ site.url }}galeria/" />
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}" type="image/jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v={{ asset_version }}" />
+</head>
+<body class="page-galeria">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header is-solid" id="inicio">
+    <div class="header-inner">
+      <a class="brand" href="{{ home_href }}" aria-label="{{ site.name }} — Inicio">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="40" height="40" />
+        <span class="brand-text">
+          <span class="brand-jp" lang="ja">{{ site.japanese }}</span>
+          <span class="brand-en">{{ site.name }}</span>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="nav-menu" aria-label="Principal">
+        {% for item in nav %}
+        <a href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+        <a class="nav-cta" href="{{ asset_prefix }}admin/" title="Administrar"><span class="hanko" lang="ja" aria-hidden="true">管理</span><span class="nav-cta-label">Administrar</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <header class="gallery-page-hero">
+      <div class="section-inner centered reveal is-visible">
+        <p class="section-kicker"><span lang="ja">{{ galeria.kicker }}</span> {{ galeria.kicker_label }}</p>
+        <h1>{{ galeria.title }}</h1>
+        <p class="lead">{{ galeria.lead }}</p>
+        <div class="ink-rule" aria-hidden="true"></div>
+      </div>
+    </header>
+
+    <section
+      class="gallery-showcase section-inner"
+      id="gallery-showcase"
+      data-src="{{ galeria.data_url }}"
+      data-empty="{{ galeria.empty }}"
+      data-asset-prefix="{{ galeria.asset_prefix }}"
+      data-featured-label="{{ galeria.featured_label }}"
+    >
+      {% macro media_src(item) %}{% if item.src.startswith('http') %}{{ item.src }}{% else %}{{ galeria.asset_prefix }}{{ item.src }}{% endif %}{% endmacro %}
+      {% macro media_thumb(item, w, h, lazy) %}
+            {% if item.type == 'video' %}
+            <video src="{{ media_src(item) }}" muted playsinline preload="metadata"></video>
+            <span class="gallery-badge">Video</span>
+            {% else %}
+            <img src="{{ media_src(item) }}" alt="{{ item.caption or 'Galería' }}"{% if lazy %} loading="lazy"{% endif %} width="{{ w }}" height="{{ h }}" />
+            {% if item.type == 'youtube' %}
+            <span class="gallery-play" aria-hidden="true"></span>
+            <span class="gallery-badge">YouTube</span>
+            {% endif %}
+            {% endif %}
+      {% endmacro %}
+      {% if galeria.photos %}
+      {% set featured = galeria.photos[0] %}
+      <div class="gallery-featured" id="gallery-featured">
+        <div class="gallery-featured-stage">
+          <button type="button" class="gallery-featured-media" aria-label="Ver en grande" data-type="{{ featured.type }}" data-src="{{ media_src(featured) }}" data-youtube="{{ featured.youtube or '' }}" data-caption="{{ featured.caption or '' }}">
+            {{ media_thumb(featured, 1400, 800, false) }}
+          </button>
+          <div class="gallery-featured-meta">
+            <p class="gallery-featured-kicker">{{ galeria.featured_label }}</p>
+            <p class="gallery-featured-title">{{ featured.caption or galeria.title }}</p>
+          </div>
+          <button type="button" class="gallery-nav gallery-nav-prev" aria-label="Anterior">‹</button>
+          <button type="button" class="gallery-nav gallery-nav-next" aria-label="Siguiente">›</button>
+        </div>
+        <div class="gallery-dots" id="gallery-dots" role="tablist" aria-label="Seleccionar foto"></div>
+      </div>
+
+      <div class="gallery-card-grid" id="gallery-grid">
+        {% for item in galeria.photos %}
+        <button
+          type="button"
+          class="gallery-card reveal is-visible"
+          data-type="{{ item.type }}"
+          data-src="{{ media_src(item) }}"
+          data-youtube="{{ item.youtube or '' }}"
+          data-caption="{{ item.caption or '' }}"
+          data-index="{{ loop.index0 }}"
+        >
+          <span class="gallery-card-media">
+            {{ media_thumb(item, 640, 640, true) }}
+          </span>
+          <span class="gallery-card-body">
+            <span class="gallery-card-title">{{ item.caption or 'Honshitsu Dojo' }}</span>
+            <span class="gallery-card-sub">{{ site.name }}</span>
+          </span>
+        </button>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="gallery-empty">{{ galeria.empty }}</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="44" height="44" loading="lazy" />
+      <p lang="ja">{{ site.japanese }}</p>
+      <p>{{ site.japanese_sub }}</p>
+      <p class="credit">{{ site.credit }}</p>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button type="button" class="lightbox-close" aria-label="Cerrar">&times;</button>
+    <div class="lightbox-stage"></div>
+    <p class="lightbox-caption"></p>
+  </div>
+
+{% include "_whatsapp.html" %}
+  <script src="{{ url_for('static', filename='js/main.js') }}?v={{ asset_version }}" defer></script>
+</body>
+</html>

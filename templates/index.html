@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ site.title }}</title>
+  <meta name="description" content="{{ site.description }}" />
+  <meta property="og:title" content="{{ site.name }}" />
+  <meta property="og:description" content="{{ site.tagline }}" />
+  <meta property="og:image" content="{{ site.url }}static/img/logo.jpg" />
+  <meta property="og:url" content="{{ site.url }}" />
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}" type="image/jpeg" />
+  <link rel="preload" as="image" href="{{ url_for('static', filename='img/hero-gi.jpg') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v={{ asset_version }}" />
+</head>
+<body>
+  {% macro collage(key, images) %}
+  {% set n = images | length %}
+  {% set slots = [1] if n == 1 else ([0, 2] if n == 2 else [0, 1, 2]) %}
+  <div class="collage{% if not n %} is-empty{% endif %}" data-collage="{{ key }}" data-images='{{ images | tojson }}' data-src="{{ collage_data_url }}" aria-hidden="true">
+    {% for i in range(3) %}
+    <figure class="collage-item collage-item-{{ i + 1 }}"{% if i not in slots or not n %} hidden{% endif %}>
+      {% if n and i in slots %}<img src="{{ images[slots.index(i)] }}" alt="" loading="lazy" />{% else %}<img alt="" loading="lazy" />{% endif %}
+    </figure>
+    {% endfor %}
+    <button type="button" class="collage-nav collage-prev" tabindex="-1"{% if n < 2 %} hidden{% endif %}>‹</button>
+    <button type="button" class="collage-nav collage-next" tabindex="-1"{% if n < 2 %} hidden{% endif %}>›</button>
+  </div>
+  {% endmacro %}
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header" id="inicio" data-transparent>
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="{{ site.name }} — Inicio">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="40" height="40" />
+        <span class="brand-text">
+          <span class="brand-jp" lang="ja">{{ site.japanese }}</span>
+          <span class="brand-en">{{ site.name }}</span>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="nav-menu" aria-label="Principal">
+        {% for item in nav %}
+        <a href="{{ item.href }}">{{ item.label }}</a>
+        {% endfor %}
+        <a class="nav-cta" href="admin/" title="Administrar"><span class="hanko" lang="ja" aria-hidden="true">管理</span><span class="nav-cta-label">Administrar</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" aria-label="Portada">
+      <div class="hero-media" aria-hidden="true">
+        <img src="{{ url_for('static', filename='img/hero-gi.jpg') }}" alt="" width="1920" height="1080" fetchpriority="high" />
+      </div>
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="hero-frame" aria-hidden="true"></div>
+      <p class="hero-side hero-side-left" lang="ja" aria-hidden="true">{{ site.hero_side_left }}</p>
+      <p class="hero-side hero-side-right" lang="ja" aria-hidden="true">{{ site.hero_side }}</p>
+      <div class="hero-copy">
+        <img class="hero-seal" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="72" height="72" />
+        <p class="hero-kicker">{{ site.style_line }}</p>
+        <h1 lang="ja">{{ site.japanese }}</h1>
+        <p class="hero-roman">{{ site.name }}</p>
+        <div class="torii-line" aria-hidden="true"><span></span></div>
+        <p class="hero-tagline">{{ site.tagline }}</p>
+      </div>
+      <a class="hero-scroll" href="#bienvenida" aria-label="Continuar">
+        <span></span>
+      </a>
+    </section>
+
+    <div class="welcome-bar" id="bienvenida">
+      <p>
+        <span class="welcome-jp" lang="ja">{{ site.japanese }}</span>
+        <span class="dot" aria-hidden="true"></span>
+        <span>{{ site.welcome }}</span>
+        <span class="dot" aria-hidden="true"></span>
+        <span class="welcome-jp" lang="ja">{{ site.hero_side }}</span>
+      </p>
+    </div>
+
+    <section class="section section-plain" id="karate">
+      <div class="section-inner split{% if karate.collage %} has-collage{% endif %}">
+        <div class="split-copy centered reveal">
+          <p class="section-kicker"><span lang="ja">{{ karate.kicker }}</span> {{ karate.kicker_label }}</p>
+          <h2>{{ karate.title }}</h2>
+          <p class="lead italic">{{ karate.body }}</p>
+          <div class="ink-rule" aria-hidden="true"></div>
+        </div>
+        {{ collage("karate", karate.collage) }}
+      </div>
+    </section>
+
+    <section class="section section-soft" id="historia">
+      <div class="section-inner split split-media-left{% if historia.collage %} has-collage{% endif %}">
+        <div class="split-copy centered reveal">
+          <p class="section-kicker"><span lang="ja">{{ historia.kicker }}</span> {{ historia.kicker_label }}</p>
+          <h2>{{ historia.title }}</h2>
+          <p class="body-copy">{{ historia.body }}</p>
+          <div class="ink-rule" aria-hidden="true"></div>
+        </div>
+        {{ collage("historia", historia.collage) }}
+      </div>
+    </section>
+
+    <section class="section section-plain" id="nombre">
+      <div class="section-inner centered reveal">
+        <p class="section-kicker"><span lang="ja">{{ nombre.kicker }}</span> {{ nombre.kicker_label }}</p>
+        <img class="nombre-seal" src="{{ url_for('static', filename='img/logo-full.jpg') }}" alt="Distintivo Honshitsu Dojo" width="160" height="160" loading="lazy" />
+        <h2>{{ nombre.title }}</h2>
+        <p class="lead">{{ nombre.body }}</p>
+        <div class="ink-rule" aria-hidden="true"></div>
+        <h3 class="subhead">{{ nombre.distintivo_title }}</h3>
+      </div>
+
+      <div class="panel-grid section-inner">
+        {% for symbol in nombre.symbols %}
+        <article class="panel reveal">
+          <div class="panel-bg" aria-hidden="true">
+            <img src="{{ url_for('static', filename=symbol.image) }}" alt="" loading="lazy" />
+          </div>
+          <div class="panel-content">
+            <h3>{{ symbol.title }}</h3>
+            <p>{{ symbol.body }}</p>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <ul class="color-notes section-inner reveal">
+        {% for note in nombre.color_notes %}
+        <li>{{ note }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="section section-soft" id="sensei">
+      <div class="section-inner sensei-layout reveal">
+        <figure class="sensei-photo">
+          <img src="{{ url_for('static', filename='img/sensei-lg.jpeg') }}" alt="Nuestro Sensei — Honshitsu Dojo" width="1000" height="862" loading="lazy" />
+        </figure>
+        <div class="sensei-copy">
+          <p class="section-kicker align-left"><span lang="ja">{{ sensei.kicker }}</span> {{ sensei.kicker_label }}</p>
+          <p class="eyebrow">{{ sensei.eyebrow }}</p>
+          <h2>{{ sensei.title }}</h2>
+          <div class="ink-rule align-left" aria-hidden="true"></div>
+          <p class="body-copy">{{ sensei.body }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-ubicacion" id="ubicacion" data-ubicacion-src="{{ ubicacion_data_url }}">
+      <div class="ubicacion-bg" aria-hidden="true">
+        <img src="{{ url_for('static', filename='img/ubicacion-templo.jpg') }}" alt="" width="1280" height="720" loading="lazy" />
+      </div>
+      <div class="section-inner centered reveal">
+        <p class="section-kicker light"><span lang="ja">{{ ubicacion.kicker }}</span> {{ ubicacion.kicker_label }}</p>
+        <p class="ubicacion-kicker">{{ ubicacion.lead }}</p>
+        <h2 data-ubicacion-name>{{ ubicacion.place_name }}</h2>
+        <p class="ubicacion-place" data-ubicacion-label>{{ ubicacion.location_label }}</p>
+        <div class="ubicacion-details">
+          <div class="ubicacion-item">
+            <h3>Dirección</h3>
+            <p data-ubicacion-address>
+              {% for line in ubicacion.address_lines %}
+              {{ line }}{% if not loop.last %}<br />{% endif %}
+              {% endfor %}
+            </p>
+          </div>
+          <div class="ubicacion-item">
+            <h3>Días y horarios</h3>
+            <p>
+              {% for line in contact.schedule_lines %}
+              {{ line }}{% if not loop.last %}<br />{% endif %}
+              {% endfor %}
+            </p>
+          </div>
+          <div class="ubicacion-item">
+            <h3>Contacto</h3>
+            <p>
+              <a href="{{ contact.whatsapp }}" target="_blank" rel="noopener noreferrer">{{ contact.phone_display }}</a><br />
+              <a href="{{ contact.instagram }}" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </p>
+          </div>
+        </div>
+        <div class="ubicacion-map">
+          <iframe
+            data-ubicacion-map
+            src="https://maps.google.com/maps?q={{ ubicacion.map_q | urlencode }}&amp;z=16&amp;hl=es&amp;output=embed"
+            title="Mapa: {{ ubicacion.place_name }}, {{ ubicacion.address_lines | join(', ') }}"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-light" href="{{ contact.whatsapp }}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a class="btn btn-outline" data-ubicacion-directions href="https://www.google.com/maps/dir/?api=1&amp;destination={{ ubicacion.map_q | urlencode }}" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
+          <a class="btn btn-outline" href="{{ contact.opiniones }}" target="_blank" rel="noopener noreferrer">Opiniones</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="44" height="44" loading="lazy" />
+      <p lang="ja">{{ site.japanese }}</p>
+      <p>{{ site.japanese_sub }}</p>
+      <p class="credit">{{ site.credit }}</p>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button type="button" class="lightbox-close" aria-label="Cerrar">&times;</button>
+    <div class="lightbox-stage"></div>
+    <p class="lightbox-caption"></p>
+  </div>
+
+{% include "_whatsapp.html" %}
+  <script src="{{ url_for('static', filename='js/main.js') }}?v={{ asset_version }}" defer></script>
+</body>
+</html>

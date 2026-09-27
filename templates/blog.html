@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ blog.page_title }}</title>
+  <meta name="description" content="{{ blog.lead }}" />
+  <meta property="og:title" content="{{ blog.title }} · {{ site.name }}" />
+  <meta property="og:description" content="{{ blog.lead }}" />
+  <meta property="og:image" content="{{ site.url }}static/img/logo.jpg" />
+  <meta property="og:url" content="{{ site.url }}blog/" />
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}" type="image/jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v={{ asset_version }}" />
+</head>
+<body class="page-galeria page-blog">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header is-solid" id="inicio">
+    <div class="header-inner">
+      <a class="brand" href="{{ home_href }}" aria-label="{{ site.name }} — Inicio">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="40" height="40" />
+        <span class="brand-text">
+          <span class="brand-jp" lang="ja">{{ site.japanese }}</span>
+          <span class="brand-en">{{ site.name }}</span>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="nav-menu" aria-label="Principal">
+        {% for item in nav %}
+        <a href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+        <a class="nav-cta" href="{{ asset_prefix }}admin/" title="Administrar"><span class="hanko" lang="ja" aria-hidden="true">管理</span><span class="nav-cta-label">Administrar</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <header class="gallery-page-hero">
+      <div class="section-inner centered reveal is-visible">
+        <p class="section-kicker"><span lang="ja">{{ blog.kicker }}</span> {{ blog.kicker_label }}</p>
+        <h1>{{ blog.title }}</h1>
+        <p class="lead">{{ blog.lead }}</p>
+        <div class="ink-rule" aria-hidden="true"></div>
+      </div>
+    </header>
+
+    <section class="blog-page">
+      <div
+        class="blog-list section-inner"
+        id="blog-list"
+        data-src="{{ blog.data_url }}"
+        data-empty="{{ blog.empty }}"
+        data-asset-prefix="{{ asset_prefix }}"
+      ></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="" width="44" height="44" loading="lazy" />
+      <p lang="ja">{{ site.japanese }}</p>
+      <p>{{ site.japanese_sub }}</p>
+      <p class="credit">{{ site.credit }}</p>
+    </div>
+  </footer>
+
+{% include "_whatsapp.html" %}
+  <script src="{{ url_for('static', filename='js/main.js') }}?v={{ asset_version }}" defer></script>
+</body>
+</html>

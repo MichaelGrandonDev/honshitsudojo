@@ -1,0 +1,5 @@
+Options -Indexes
+# Solo archivos de media — sin ejecución de scripts
+<FilesMatch "\.(?i:php|phtml|php3|php4|php5|phar|cgi|pl|py|asp|aspx)$">
+  Require all denied
+</FilesMatch>

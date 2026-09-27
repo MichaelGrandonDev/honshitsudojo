@@ -1,0 +1,12 @@
+# Panel de administracion — galeria y blog
+Options -Indexes
+DirectoryIndex index.php
+<FilesMatch "^(bootstrap|config|credentials|credentials\.example)\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
